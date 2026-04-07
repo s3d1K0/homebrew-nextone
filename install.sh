@@ -9,6 +9,7 @@ BOLD='\033[1m'
 
 APP_REPO_SLUG="${NEXTONE_APP_REPO_SLUG:-s3d1K0/NextOne-Agent}"
 BOOTSTRAP_REPO_SLUG="${NEXTONE_BOOTSTRAP_REPO_SLUG:-s3d1K0/homebrew-nextone}"
+BOOTSTRAP_RAW_URL="${NEXTONE_BOOTSTRAP_RAW_URL:-https://raw.githubusercontent.com/s3d1K0/homebrew-nextone/main/install.sh}"
 TAP_NAME="${NEXTONE_HOMEBREW_TAP:-s3d1K0/nextone}"
 FORMULA_NAME="${NEXTONE_FORMULA_NAME:-nextone-agent}"
 
@@ -16,6 +17,14 @@ info() { echo -e "${GREEN}[✓]${NC} $1"; }
 warn() { echo -e "${YELLOW}[!]${NC} $1"; }
 fail() { echo -e "${RED}[✗]${NC} $1"; exit 1; }
 step() { echo -e "\n${BOLD}→ $1${NC}"; }
+
+if [[ -z "${NEXTONE_BOOTSTRAP_TTY:-}" && ! -t 0 && -r /dev/tty ]]; then
+  tmp_script="$(mktemp -t nextone-bootstrap.XXXXXX)"
+  curl -fsSL "${BOOTSTRAP_RAW_URL}" -o "${tmp_script}"
+  chmod +x "${tmp_script}"
+  export NEXTONE_BOOTSTRAP_TTY=1
+  exec /bin/bash "${tmp_script}" </dev/tty
+fi
 
 echo ""
 echo "╔══════════════════════════════════════╗"
