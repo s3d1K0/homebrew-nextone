@@ -45,7 +45,7 @@ info "$(gh --version | head -1)"
 
 step "Authenticating GitHub"
 if ! gh auth status >/dev/null 2>&1; then
-  gh auth login
+  gh auth login --hostname github.com --git-protocol https --web
 fi
 gh auth setup-git
 info "GitHub auth ready"
