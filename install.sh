@@ -54,6 +54,7 @@ info "$(gh --version | head -1)"
 
 step "Authenticating GitHub"
 if ! gh auth status >/dev/null 2>&1; then
+  echo "When prompted by gh, answer 'Y' to authenticate Git with your GitHub credentials."
   gh auth login --hostname github.com --git-protocol https --web --clipboard
 fi
 gh auth setup-git
