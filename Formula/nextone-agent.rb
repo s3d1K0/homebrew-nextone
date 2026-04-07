@@ -2,7 +2,7 @@ class NextoneAgent < Formula
   desc "Bootstrap CLI for installing and configuring NextOne Agent"
   homepage "https://github.com/s3d1K0/homebrew-nextone"
   url "https://github.com/s3d1K0/NextOne-Agent.git", branch: "main", using: GitDownloadStrategy
-  version "0.1.0"
+  version "0.1.1"
 
   depends_on "python@3.12"
 
@@ -12,7 +12,11 @@ class NextoneAgent < Formula
     (bin/"nextone").write <<~SH
       #!/bin/bash
       export PYTHONPATH="#{libexec}:${PYTHONPATH}"
-      exec "#{Formula["python@3.12"].opt_bin}/python3" -m nextone_cli.cli "$@"
+      PYTHON_BIN="#{Formula["python@3.12"].opt_bin}/python3.12"
+      if [[ ! -x "${PYTHON_BIN}" ]]; then
+        PYTHON_BIN="#{Formula["python@3.12"].opt_bin}/python3"
+      fi
+      exec "${PYTHON_BIN}" -m nextone_cli.cli "$@"
     SH
   end
 
