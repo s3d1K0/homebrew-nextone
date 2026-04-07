@@ -2,7 +2,7 @@ class NextoneAgent < Formula
   desc "Bootstrap CLI for installing and configuring NextOne Agent"
   homepage "https://github.com/s3d1K0/homebrew-nextone"
   url "https://github.com/s3d1K0/NextOne-Agent.git", branch: "main", using: GitDownloadStrategy
-  version "0.1.1"
+  version "0.1.2"
 
   depends_on "python@3.12"
 
