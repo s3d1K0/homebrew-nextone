@@ -8,6 +8,14 @@ Installation :
 curl -fsSL https://raw.githubusercontent.com/s3d1K0/homebrew-nextone/main/install.sh | bash
 ```
 
+Apres le setup initial :
+
+```bash
+nextone
+```
+
+La commande relance automatiquement le client AI configure dans `~/NextoneMCP`.
+
 Le repo est public pour exposer :
 - `install.sh`
 - `Formula/nextone-agent.rb`
