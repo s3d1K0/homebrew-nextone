@@ -17,6 +17,23 @@ info() { echo -e "${GREEN}[✓]${NC} $1"; }
 warn() { echo -e "${YELLOW}[!]${NC} $1"; }
 fail() { echo -e "${RED}[✗]${NC} $1"; exit 1; }
 step() { echo -e "\n${BOLD}→ $1${NC}"; }
+current_github_user() { gh api user --jq .login 2>/dev/null || true; }
+explain_repo_access_issue() {
+  current_user="$(current_github_user)"
+  echo ""
+  echo "GitHub access is configured, but this account cannot read ${APP_REPO_SLUG}."
+  if [[ -n "${current_user}" ]]; then
+    echo "Current GitHub account: ${current_user}"
+  fi
+  echo ""
+  echo "Do this:"
+  echo "  1. Accept the invitation at: https://github.com/${APP_REPO_SLUG}/invitations"
+  echo "  2. If this is the wrong account, run:"
+  echo "     gh auth logout -h github.com"
+  echo "     gh auth login --hostname github.com --git-protocol https --web --clipboard"
+  echo "  3. Re-run this install command"
+  echo ""
+}
 
 if [[ -z "${NEXTONE_BOOTSTRAP_TTY:-}" && ! -t 0 && -r /dev/tty ]]; then
   tmp_script="$(mktemp -t nextone-bootstrap.XXXXXX)"
@@ -61,7 +78,10 @@ gh auth setup-git
 info "GitHub auth ready"
 
 step "Checking repo access"
-gh repo view "${APP_REPO_SLUG}" >/dev/null 2>&1 || fail "No access to ${APP_REPO_SLUG}. Ask Sedik for repo access first."
+if ! gh repo view "${APP_REPO_SLUG}" >/dev/null 2>&1; then
+  explain_repo_access_issue
+  fail "No access to ${APP_REPO_SLUG}. Ask Sedik for repo access first."
+fi
 info "Access confirmed to ${APP_REPO_SLUG}"
 
 step "Installing NextOne bootstrap CLI"
